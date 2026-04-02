@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2016
 
+openwrt_version="${1:-snapshot}"
+
+case "$openwrt_version" in
+    24.10|25.12|snapshot)
+        ;;
+    *)
+        echo "Error: Unsupported OpenWrt version '$openwrt_version'"
+        echo "Supported versions: 24.10, 25.12, snapshot"
+        exit 1
+        ;;
+esac
+
 trap 'rm -rf "$TMPDIR"' EXIT
 TMPDIR=$(mktemp -d) || exit 1
 
@@ -71,7 +83,7 @@ mkdir -p "./package/turboacc/luci-app-turboacc/root/usr/share/ucitrack"
 mkdir -p "./package/turboacc/shortcut-fe/fast-classifier/patches"
 
 for kernel_version in $kernel_versions; do
-    cp -f "$TMPDIR/turboacc/custom/hack-$kernel_version/951-disable-unused-functions.patch" "./target/linux/generic/hack-$kernel_version"
+    cp -f "$TMPDIR/turboacc/custom/$openwrt_version/hack-$kernel_version/951-disable-unused-functions.patch" "./target/linux/generic/hack-$kernel_version"
 done
 
 cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/Makefile" "./package/turboacc/luci-app-turboacc/"
