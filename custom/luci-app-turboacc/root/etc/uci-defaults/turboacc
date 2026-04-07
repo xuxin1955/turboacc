@@ -39,7 +39,7 @@ else
 	uci -q set "turboacc.config.fastpath"="none"
 fi
 
-if [ -e "/lib/modules/$kernel_ver/xt_FULLCONENAT.ko" ] || [ -e "/lib/modules/$kernel_ver/nft_fullcone.ko" ]; then
+if [ -e "/lib/modules/$kernel_ver/fullcone_nat.ko" ]; then
 	uci -q set "turboacc.config.fullcone"="1"
 else
 	uci -q set "turboacc.config.fullcone"="0"

@@ -11,10 +11,16 @@
 + 在openwrt源代码所在目录执行：
 
     ```bash
-    curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+    curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/unified-fullcone/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
     ```
 
-    脚本会自动读取当前源码树的内核版本，并匹配对应的补丁。
+    脚本会自动从 `unified-fullcone` 分支拉取代码，并根据当前源码树的内核版本匹配对应的补丁。
+
+    如果需要指定其他分支，可以设置环境变量：
+
+    ```bash
+    TURBOACC_BRANCH=main bash add_turboacc.sh
+    ```
 
 + 之后执行
 
@@ -23,6 +29,63 @@ make menuconfig
 ```
 
 + 在 > LuCI > 3. Applications中选中luci-app-turboacc
++ Full Cone NAT 默认启用（`Include fullcone NAT` 选项），无需额外配置。该选项会自动拉取统一 fullcone 模块，fw3/fw4 环境均适用。
+
+## Full Cone NAT
+
+本项目使用统一的 fullcone NAT 内核模块 `fullcone_nat.ko`（位于 `custom/fullconenat-unified/`），取代了之前的三种独立实现（CHION xt_FULLCONENAT、Broadcom fullcone、nft_fullcone）。
+
+### 特性
+
+- **单一模块同时支持 iptables 和 nftables**：在 fw3 下注册为 `FULLCONENAT` target，在 fw4 下注册为 `fullcone` nft expression
+- **基于 conntrack expectation**：不使用自建哈希表，所有端口映射存储在内核 conntrack expectation 表中，天然支持网络命名空间隔离
+- **IPv4 + IPv6**：同时支持双栈 fullcone NAT
+- **UDP + TCP**：UDP 立即创建映射，TCP 在连接建立后创建映射
+- **RFC 4787 端口奇偶校验**：偶数端口映射到偶数，奇数端口映射到奇数
+- **无内核侵入**：独立 .ko 模块，不修改 `nf_nat_masquerade.c` 等内核核心文件，升级内核无需重新适配补丁
+
+### 与旧方案的对比
+
+| | CHION xt_FULLCONENAT | Broadcom Fullcone | 统一模块 fullcone_nat |
+|---|---|---|---|
+| 形态 | 独立 .ko | 内核补丁 | 独立 .ko |
+| iptables | 支持 | 支持 | 支持 |
+| nftables | 不支持 | 部分支持 | 支持 |
+| IPv6 | 支持 | 不支持 | 支持 |
+| TCP | 支持 | 不支持 | 支持 |
+| 映射存储 | 自建哈希表 | conntrack expectation | conntrack expectation |
+| 命名空间隔离 | 无 | 有 | 有 |
+| 内核侵入 | 无 | 高（修改核心文件） | 无 |
+
+## 目录结构
+
+```
+lede/                          # 上游 LEDE 仓库的文件镜像（仅供对比，不做修改）
+├── luci-app-turboacc/         # LuCI 界面
+├── shortcut-fe/               # SFE 加速引擎
+├── hack-6.*/                  # 内核补丁（conntrack events、SFE 等）
+├── pending-6.*/               # 可选内核补丁
+└── patches/                   # firewall/nftables/libnftnl 用户态补丁
+
+custom/                        # 自定义覆盖文件（覆盖 lede/ 中的同名文件）
+├── fullconenat-unified/       # 统一 fullcone NAT 内核模块源码
+│   ├── Makefile               # OpenWrt 包定义
+│   └── src/
+│       ├── fullcone.h         # 共享头文件
+│       ├── fullcone_core.c    # 核心逻辑（helper、expectation、端口分配）
+│       ├── fullcone_xt.c      # iptables 集成 + 模块入口
+│       ├── fullcone_nft.c     # nftables 集成
+│       └── libipt_FULLCONENAT.c  # iptables 用户态扩展
+├── luci-app-turboacc/         # LuCI 覆盖文件
+│   ├── Makefile               # 包依赖定义
+│   ├── htdocs/.../turboacc.js # 前端界面（移除旧选项）
+│   └── root/
+│       ├── etc/uci-defaults/  # 初始配置
+│       └── usr/share/rpcd/    # RPC 检测（fullcone_nat.ko）
+├── hack-6.*/                  # 版本特定的自定义内核补丁
+├── patches/                   # 自定义用户态补丁覆盖
+└── shortcut-fe/               # SFE 自定义补丁
+```
 
 ## 注意
 

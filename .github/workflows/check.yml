@@ -34,20 +34,13 @@ jobs:
             cp -r $CLONE_PATH/lede/package/network/services/fullconenat-nft $COMPARE_PATH/new/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.6/952-add-net-conntrack-events-support-multiple-registrant.patch $COMPARE_PATH/new/hack-6.6/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.6/953-net-patch-linux-kernel-to-support-shortcut-fe.patch $COMPARE_PATH/new/hack-6.6/
-            cp $CLONE_PATH/lede/target/linux/generic/hack-6.6/982-add-bcm-fullconenat-support.patch $COMPARE_PATH/new/hack-6.6/
-            cp $CLONE_PATH/lede/target/linux/generic/hack-6.6/983-add-bcm-fullconenat-to-nft.patch $COMPARE_PATH/new/hack-6.6/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.12/952-add-net-conntrack-events-support-multiple-registrant.patch $COMPARE_PATH/new/hack-6.12/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.12/953-net-patch-linux-kernel-to-support-shortcut-fe.patch $COMPARE_PATH/new/hack-6.12/
-            cp $CLONE_PATH/lede/target/linux/generic/hack-6.12/982-add-bcm-fullconenat-support.patch $COMPARE_PATH/new/hack-6.12/
-            cp $CLONE_PATH/lede/target/linux/generic/hack-6.12/983-add-bcm-fullconenat-to-nft.patch $COMPARE_PATH/new/hack-6.12/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.18/952-add-net-conntrack-events-support-multiple-registrant.patch $COMPARE_PATH/new/hack-6.18/
             cp $CLONE_PATH/lede/target/linux/generic/hack-6.18/953-net-patch-linux-kernel-to-support-shortcut-fe.patch $COMPARE_PATH/new/hack-6.18/
-            cp $CLONE_PATH/lede/target/linux/generic/hack-6.18/982-add-bcm-fullconenat-support.patch $COMPARE_PATH/new/hack-6.18/
             cp -r $CLONE_PATH/luci/applications/luci-app-turboacc $COMPARE_PATH/new/
             cp $CLONE_PATH/lede/package/network/config/firewall/patches/100-fullconenat.patch $COMPARE_PATH/new/patches/firewall/patches/
-            cp $CLONE_PATH/lede/package/network/config/firewall/patches/101-bcm-fullconenat.patch $COMPARE_PATH/new/patches/firewall/patches/
             cp $CLONE_PATH/lede/package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch $COMPARE_PATH/new/patches/firewall4/patches/
-            cp $CLONE_PATH/lede/package/network/utils/iptables/patches/900-bcm-fullconenat.patch $COMPARE_PATH/new/patches/iptables/patches/
             cp $CLONE_PATH/lede/package/libs/libnftnl/patches/001-libnftnl-add-fullcone-expression-support.patch $COMPARE_PATH/new/patches/libnftnl/patches/
             cp $CLONE_PATH/lede/package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch $COMPARE_PATH/new/patches/nftables/patches/
             cp $CLONE_PATH/lede/target/linux/generic/pending-6.6/613-netfilter_optional_tcp_window_check.patch $COMPARE_PATH/new/pending-6.6/

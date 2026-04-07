@@ -83,12 +83,12 @@ find_best_patch_dir() {
     echo "$best_dir"
 }
 
-git clone --depth=1 --single-branch https://github.com/mufeng05/turboacc "$TMPDIR/turboacc" || exit 1
+BRANCH="${TURBOACC_BRANCH:-unified-fullcone}"
+git clone --depth=1 --single-branch -b "$BRANCH" https://github.com/mufeng05/turboacc "$TMPDIR/turboacc" || exit 1
 
 mkdir -p "./package/turboacc"
 mkdir -p "./package/network/config/firewall/patches"
 mkdir -p "./package/network/config/firewall4/patches"
-mkdir -p "./package/network/utils/iptables/patches"
 mkdir -p "./package/network/utils/nftables/patches"
 mkdir -p "./package/libs/libnftnl/patches"
 
@@ -98,12 +98,6 @@ for kernel_version in $kernel_versions; do
     if [ "$kernel_version" = "6.18" ] || [ "$kernel_version" = "6.12" ] || [ "$kernel_version" = "6.6" ]; then
         cp -f "$TMPDIR/turboacc/lede/hack-$kernel_version/952-add-net-conntrack-events-support-multiple-registrant.patch" "./target/linux/generic/hack-$kernel_version"
         cp -f "$TMPDIR/turboacc/lede/hack-$kernel_version/953-net-patch-linux-kernel-to-support-shortcut-fe.patch" "./target/linux/generic/hack-$kernel_version"
-        cp -f "$TMPDIR/turboacc/lede/hack-$kernel_version/982-add-bcm-fullconenat-support.patch" "./target/linux/generic/hack-$kernel_version"
-
-        if [ -f "$TMPDIR/turboacc/lede/hack-$kernel_version/983-add-bcm-fullconenat-to-nft.patch" ]; then
-            cp -f "$TMPDIR/turboacc/lede/hack-$kernel_version/983-add-bcm-fullconenat-to-nft.patch" "./target/linux/generic/hack-$kernel_version"
-        fi
-
         if [ -f "$TMPDIR/turboacc/lede/pending-$kernel_version/613-netfilter_optional_tcp_window_check.patch" ]; then
             cp -f "$TMPDIR/turboacc/lede/pending-$kernel_version/613-netfilter_optional_tcp_window_check.patch" "./target/linux/generic/pending-$kernel_version"
         fi
@@ -118,13 +112,11 @@ for kernel_version in $kernel_versions; do
 done
 
 cp -rf "$TMPDIR/turboacc/lede/luci-app-turboacc" "./package/turboacc"
-cp -rf "$TMPDIR/turboacc/lede/fullconenat" "./package/turboacc"
-cp -rf "$TMPDIR/turboacc/lede/fullconenat-nft" "./package/turboacc"
+cp -rf "$TMPDIR/turboacc/custom/fullconenat-unified" "./package/turboacc/fullconenat"
 cp -rf "$TMPDIR/turboacc/lede/shortcut-fe" "./package/turboacc"
 
 cp -rf "$TMPDIR/turboacc/lede/patches/firewall/patches/"* "./package/network/config/firewall/patches/"
 cp -rf "$TMPDIR/turboacc/lede/patches/firewall4/patches/"* "./package/network/config/firewall4/patches/"
-cp -rf "$TMPDIR/turboacc/lede/patches/iptables/patches/"* "./package/network/utils/iptables/patches/"
 cp -rf "$TMPDIR/turboacc/lede/patches/nftables/patches/"* "./package/network/utils/nftables/patches/"
 cp -rf "$TMPDIR/turboacc/lede/patches/libnftnl/patches/"* "./package/libs/libnftnl/patches/"
 
@@ -150,15 +142,12 @@ for i in "${!kv_array[@]}"; do
     fi
 done
 
+cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/htdocs/luci-static/resources/view/turboacc.js" "./package/turboacc/luci-app-turboacc/htdocs/luci-static/resources/view/"
 cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/Makefile" "./package/turboacc/luci-app-turboacc/"
 cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/root/etc/uci-defaults/turboacc" "./package/turboacc/luci-app-turboacc/root/etc/uci-defaults/"
 cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/root/usr/share/rpcd/ucode/luci.turboacc" "./package/turboacc/luci-app-turboacc/root/usr/share/rpcd/ucode/"
 cp -f "$TMPDIR/turboacc/custom/luci-app-turboacc/root/usr/share/ucitrack/luci-app-turboacc.json" "./package/turboacc/luci-app-turboacc/root/usr/share/ucitrack/"
 rm -rf "./package/turboacc/luci-app-turboacc/root/usr/libexec"
-cp -f "$TMPDIR/turboacc/custom/fullconenat/Makefile" "./package/turboacc/fullconenat/"
-cp -f "$TMPDIR/turboacc/custom/fullconenat-nft/Makefile" "./package/turboacc/fullconenat-nft/"
-
-cp -f "$TMPDIR/turboacc/custom/patches/iptables/patches/900-bcm-fullconenat.patch" "./package/network/utils/iptables/patches/"
 cp -f "$TMPDIR/turboacc/custom/shortcut-fe/fast-classifier/patches/001-fix-build.patch" "./package/turboacc/shortcut-fe/fast-classifier/patches/"
 
 echo "Finish"
