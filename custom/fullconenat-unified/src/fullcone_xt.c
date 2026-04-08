@@ -142,4 +142,4 @@ module_exit(fullcone_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("TurboACC Contributors");
 MODULE_DESCRIPTION("Unified Full Cone NAT (iptables + nftables)");
-MODULE_ALIAS_NFT_EXPR("fullcone");
+MODULE_ALIAS("nft-expr-fullcone");
