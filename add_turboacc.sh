@@ -112,7 +112,8 @@ for kernel_version in $kernel_versions; do
 done
 
 cp -rf "$TMPDIR/turboacc/lede/luci-app-turboacc" "./package/turboacc"
-cp -rf "$TMPDIR/turboacc/custom/fullconenat-unified" "./package/turboacc/fullconenat"
+mkdir -p "./package/turboacc/fullconenat"
+cp -rf "$TMPDIR/turboacc/custom/fullconenat-unified/"* "./package/turboacc/fullconenat/"
 cp -rf "$TMPDIR/turboacc/lede/shortcut-fe" "./package/turboacc"
 
 cp -rf "$TMPDIR/turboacc/lede/patches/firewall/patches/"* "./package/network/config/firewall/patches/"
