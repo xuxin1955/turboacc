@@ -42,7 +42,8 @@ static struct xtables_target fullconenat_tg_reg = {
 	.final_check	= FULLCONENAT_check,
 };
 
-void _init(void)
+static void init(void) __attribute__((constructor));
+static void init(void)
 {
 	xtables_register_target(&fullconenat_tg_reg);
 }

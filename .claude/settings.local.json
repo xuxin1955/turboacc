@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/llccd/netfilter-full-cone-nat/74c5e6f3c7faaf33ece451697537c81781781c20/xt_FULLCONENAT.c\")",
+      "Bash(curl:*)",
+      "Bash(python3 -c \"import sys,json; [print\\(f['name']\\) for f in json.loads\\(sys.stdin.read\\(\\)\\)]\")",
+      "Bash(xargs grep:*)",
+      "Bash(grep -A 20 \"struct nf_nat_range2\" /c/Users/gjilk/turboacc/lede/hack-6.6/*.patch)",
+      "Bash(cat /c/Users/gjilk/turboacc/.github/workflows/*.yml)",
+      "Bash(git:*)"
+    ]
+  }
+}
