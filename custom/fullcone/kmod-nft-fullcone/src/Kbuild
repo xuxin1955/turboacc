@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Kbuild for the nftables FULLCONE kernel module.
+#
+# Only nft_fullcone.c is compiled here. The engine source (fc_engine.c) is
+# pulled in via `#include` from nft_fullcone.c so that every engine function
+# becomes file-static within this single translation unit. The end result is
+# a self-contained nft_FULLCONE.ko whose symbol table is limited to the few
+# nft_expr ops we explicitly export — and that has zero linkage with the
+# xt_FULLCONE.ko built by the sibling package.
+
+obj-m += nft_FULLCONE.o
+nft_FULLCONE-y := nft_fullcone.o
+
+ccflags-y += -I$(src)

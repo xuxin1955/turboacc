@@ -1,0 +1,7 @@
+# The engine source lives ONLY in core/. The script (add_turboacc.sh) vendors
+# it into each package's src/ at install time. Local copies inside the package
+# src/ directories are explicitly ignored to keep the source tree DRY.
+kmod-ipt-fullcone/src/fc_engine.c
+kmod-ipt-fullcone/src/fc_engine.h
+kmod-nft-fullcone/src/fc_engine.c
+kmod-nft-fullcone/src/fc_engine.h

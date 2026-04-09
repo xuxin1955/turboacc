@@ -158,6 +158,34 @@ rm -rf "./package/turboacc/luci-app-turboacc/root/usr/libexec"
 cp -f "$TMPDIR/turboacc/custom/fullconenat/Makefile" "./package/turboacc/fullconenat/"
 cp -f "$TMPDIR/turboacc/custom/fullconenat-nft/Makefile" "./package/turboacc/fullconenat-nft/"
 
+# Unified fullcone NAT (new implementation): two independent kmod packages
+# (kmod-ipt-fullcone / kmod-nft-fullcone-unified) sharing a single canonical
+# engine source held in custom/fullcone/core/. The script vendors fc_engine.{c,h}
+# into each package's src/ at install time so the OpenWrt build tree ends up
+# with two fully self-contained packages while the source tree keeps just one
+# copy of the engine code.
+fc_core_src="$TMPDIR/turboacc/custom/fullcone/core"
+if [ -d "$TMPDIR/turboacc/custom/fullcone/kmod-ipt-fullcone" ]; then
+    echo "Installing kmod-ipt-fullcone (unified fullcone, iptables flavour)..."
+    mkdir -p "./package/turboacc/kmod-ipt-fullcone"
+    cp -rf "$TMPDIR/turboacc/custom/fullcone/kmod-ipt-fullcone/"* \
+        "./package/turboacc/kmod-ipt-fullcone/"
+    if [ -d "$fc_core_src" ]; then
+        cp -f "$fc_core_src"/fc_engine.* \
+            "./package/turboacc/kmod-ipt-fullcone/src/"
+    fi
+fi
+if [ -d "$TMPDIR/turboacc/custom/fullcone/kmod-nft-fullcone" ]; then
+    echo "Installing kmod-nft-fullcone-unified (unified fullcone, nftables flavour)..."
+    mkdir -p "./package/turboacc/kmod-nft-fullcone"
+    cp -rf "$TMPDIR/turboacc/custom/fullcone/kmod-nft-fullcone/"* \
+        "./package/turboacc/kmod-nft-fullcone/"
+    if [ -d "$fc_core_src" ]; then
+        cp -f "$fc_core_src"/fc_engine.* \
+            "./package/turboacc/kmod-nft-fullcone/src/"
+    fi
+fi
+
 cp -f "$TMPDIR/turboacc/custom/patches/iptables/patches/900-bcm-fullconenat.patch" "./package/network/utils/iptables/patches/"
 cp -f "$TMPDIR/turboacc/custom/shortcut-fe/fast-classifier/patches/001-fix-build.patch" "./package/turboacc/shortcut-fe/fast-classifier/patches/"
 

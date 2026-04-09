@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Kbuild for the iptables FULLCONE kernel module.
+#
+# Only xt_FULLCONE.c is compiled here. The engine source (fc_engine.c) is
+# pulled in via `#include` from xt_FULLCONE.c so that every engine function
+# becomes file-static within this single translation unit. The end result is
+# a self-contained xt_FULLCONE.ko whose symbol table is limited to the few
+# xt_target ops we explicitly export — and that has zero linkage with the
+# nft_FULLCONE.ko built by the sibling package.
+
+obj-m += xt_FULLCONE.o
+
+ccflags-y += -I$(src)
